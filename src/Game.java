@@ -1,5 +1,5 @@
 /**
- *  Esta Ã© a classe principal do jogo World of Zuul. 
+ *  Esta é a classe principal do jogo World of Zuul. 
  *  
  */
 
@@ -18,7 +18,7 @@ public class Game
     }
 
     /**
-     * Cria todas as salas e liga suas saÃ­das.
+     * Cria todas as salas e liga suas saídas.
      */
     private void createRooms()
     {
@@ -26,9 +26,9 @@ public class Game
       
         // create the rooms
         outside = new Room("fora da entrada principal da universidade");
-        theatre = new Room("em um auditÃ³rio");
+        theatre = new Room("em um auditório");
         pub = new Room("na cantina do campus");
-        lab = new Room("em um laboratÃ³rio de informÃ¡tica");
+        lab = new Room("em um laboratório de informática");
         office = new Room("na sala dos professores");
         
         // initialise room exits
@@ -38,18 +38,18 @@ public class Game
         lab.setExits(outside, office, null, null);
         office.setExits(null, null, null, lab);
 
-        currentRoom = outside;  // ComeÃ§a o jogo fora 
+        currentRoom = outside;  // Começa o jogo fora 
     }
 
     /**
-     *  A rotina de jogo principal. Faz um loop atÃ© o fim do jogo.
+     *  A rotina de jogo principal. Faz um loop até o fim do jogo.
      */
     public void play() 
     {            
         printWelcome();
 
         // Entra o loop principal. Aqui lemos comandos repetidamente e 
-        // os executamos atÃ© que o jogo termime.
+        // os executamos até que o jogo termime.
                 
         boolean finished = false;
         while (! finished) {
@@ -60,17 +60,25 @@ public class Game
     }
 
     /**
-     * Imprime a mensagem de boas vindas ao usuÃ¡rio.
+     * Imprime a mensagem de boas vindas ao usuário.
      */
     private void printWelcome()
     {
         System.out.println();
         System.out.println("Bem-vindo ao Mundo de Zuul!");
-        System.out.println("Mundo de Zuul Ã© um jogo de aventura, incrivelmente chato.");
-        System.out.println("Digite 'ajuda' se vocÃª precisar de ajuda.");
+        System.out.println("Mundo de Zuul é um jogo de aventura, incrivelmente chato.");
+        System.out.println("Digite 'ajuda' se você precisar de ajuda.");
         System.out.println();
-        System.out.println("VocÃª estÃ¡ " + currentRoom.getDescription());
-        System.out.print("SaÃ­das: ");
+        printLocationInfo();
+    }
+    
+    /**
+     * Imptimr informações relativas à
+     * Localização atual.
+     */
+    private void printLocationInfo() {
+    	System.out.println("Você está " + currentRoom.getDescription());
+        System.out.print("Saídas: ");
         if(currentRoom.northExit != null) {
             System.out.print("norte ");
         }
@@ -89,14 +97,14 @@ public class Game
     /**
      * Dado um comando, processa (ou seja: executa) o comando.
      * @param command O comando a ser processado.
-     * @return true Se o comando finaliza o jogo, senÃ£o, falso.
+     * @return true Se o comando finaliza o jogo, senão, falso.
      */
     private boolean processCommand(Command command) 
     {
         boolean wantToQuit = false;
 
         if(command.isUnknown()) {
-            System.out.println("NÃ£o sei o que vocÃª quer dizer...");
+            System.out.println("Não sei o que você quer dizer...");
             return false;
         }
 
@@ -114,27 +122,27 @@ public class Game
     // implementations of user commands:
 
     /**
-     * Imprime informaÃ§Ãµes de ajuda.
-     * Aqui imprimimos ua mensagem estÃºpida e listamos os comandos
-     * disponÃ­veis.
+     * Imprime informações de ajuda.
+     * Aqui imprimimos ua mensagem estúpida e listamos os comandos
+     * disponíveis.
      */
     private void printHelp() 
     {
-        System.out.println("VocÃª estÃ¡ perdido. VocÃª estÃ¡ sÃ³. VocÃª caminha");
+        System.out.println("Você está perdido. Você está só. Você caminha");
         System.out.println("pela universidade.");
         System.out.println();
-        System.out.println("Seus comandos sÃ£o:");
+        System.out.println("Seus comandos são:");
         System.out.println("   ir_para sair ajuda");
     }
 
     /** 
-     * Tenta ir para uma direÃ§Ã£o. Se hÃ¡ uma saÃ­da, entra na
-     * nova sala, senÃ£o imprime uma mensagem de erro.
+     * Tenta ir para uma direção. Se há uma saída, entra na
+     * nova sala, senão imprime uma mensagem de erro.
      */
     private void goRoom(Command command) 
     {
         if(!command.hasSecondWord()) {
-            // se nÃ£o hÃ¡ segunda palavra, nÃ£o sabemos onde ir...
+            // se não há segunda palavra, não sabemos onde ir...
             System.out.println("Ir para onde?");
             return;
         }
@@ -142,52 +150,26 @@ public class Game
         String direction = command.getSecondWord();
 
         // Try to leave current room.
-        Room nextRoom = null;
-        if(direction.equals("norte")) {
-            nextRoom = currentRoom.northExit;
-        }
-        if(direction.equals("leste")) {
-            nextRoom = currentRoom.eastExit;
-        }
-        if(direction.equals("sul")) {
-            nextRoom = currentRoom.southExit;
-        }
-        if(direction.equals("oeste")) {
-            nextRoom = currentRoom.westExit;
-        }
+        Room nextRoom = currentRoom.getExit(direction);
 
         if (nextRoom == null) {
-            System.out.println("NÃ£o hÃ¡ uma porta!");
+            System.out.println("Não há uma porta!");
         }
         else {
             currentRoom = nextRoom;
-            System.out.println("VocÃª estÃ¡ " + currentRoom.getDescription());
-            System.out.print("SaÃ­das: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("norte ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("leste ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("sul ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("oeste ");
-            }
-            System.out.println();
+            printLocationInfo();
         }
     }
 
     /** 
      * "Sair" foi digitado. Verifica o resto do comando para saber
-     * se o usuÃ¡rio quer realmente sair do jogo.
-     * @return true, se este comando sair do jogo, falso caso contrÃ¡rio.
+     * se o usuário quer realmente sair do jogo.
+     * @return true, se este comando sair do jogo, falso caso contrário.
      */
     private boolean quit(Command command) 
     {
         if(command.hasSecondWord()) {
-            System.out.println("Sair de do quÃª?");
+            System.out.println("Sair de do quê?");
             return false;
         }
         else {
